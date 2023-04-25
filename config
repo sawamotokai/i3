@@ -51,6 +51,8 @@ bindsym $mod+Return exec alacritty
 # kill focused window
 bindsym $mod+Shift+q kill
 
+bindsym $mod+Shift+Ctrl+c exec /usr/local/build/Deepl-linux/loader.sh
+
 # There also is the (new) i3-dmenu-desktop which only displays applications
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
 # installed.
@@ -77,6 +79,7 @@ bindsym $mod+Shift+l move right
 # move focused workspace between monitors
 bindsym $mod+Ctrl+Shift+l move workspace to output right
 bindsym $mod+Ctrl+Shift+h move workspace to output left
+bindsym $mod+Tab workspace back_and_forth
 
 # alternatively, you can use the cursor keys:
 bindsym $mod+Shift+Left move left
@@ -113,22 +116,23 @@ bindsym $mod+a focus parent
 
 # open apps on launch
 exec --no-startup-id google-chrome
-exec --no-startup-id chromium
-exec --no-startup-id spotify
+exec --no-startup-id notion-snap
+exec --no-startup-id discord
+# exec --no-startup-id spotify
 exec --no-startup-id alacritty
 
 # Define names for default workspaces for which we configure key bindings later on.
 # We use variables to avoid repeating the names in multiple places.
 set $ws1 "1: Notion "
-set $ws2 "2: Browser "
-set $ws3 "3: Terminals "
-set $ws4 "4"
-set $ws5 "5"
+set $ws2 "2: Browser "
+set $ws3 "3: Terminals "
+set $ws4 "4: PDF "
+set $ws5 "5: Discord 調"
 set $ws6 "6"
 set $ws7 "7"
 set $ws8 "8"
 set $ws9 "9"
-set $ws10 "10: Music "
+set $ws10 "10: Spotify "
 
 
 # switch to workspace
@@ -158,9 +162,11 @@ bindsym $mod+Shift+0 move container to workspace $ws10
 bindsym $mod+Control+l workspace next
 bindsym $mod+Control+h workspace prev
 
-assign [class="Chromium"] $ws1
+assign [class="notion-snap"] $ws1
 assign [class="Google-chrome"] $ws2
 assign [class="Alacritty"] $ws3
+assign [class="MuPDF"] $ws4
+assign [class="discord"] $ws5
 for_window [class="Spotify"] move to workspace $ws10
 
 # reload the configuration file
@@ -174,20 +180,16 @@ bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcu
 mode "resize" {
         # These bindings trigger as soon as you enter the resize mode
 
-        # Pressing left will shrink the window’s width.
-        # Pressing right will grow the window’s width.
-        # Pressing up will shrink the window’s height.
-        # Pressing down will grow the window’s height.
-        bindsym h resize shrink width 5 px or 5 ppt
-        bindsym j resize grow height 5 px or 5 ppt
-        bindsym k resize shrink height 5 px or 5 ppt
-        bindsym l resize grow width 5 px or 5 ppt
+        bindsym h resize shrink width 1 px or 1 ppt
+        bindsym j resize grow height 1 px or 1 ppt
+        bindsym k resize shrink height 1 px or 1 ppt
+        bindsym l resize grow width 1 px or 1 ppt
 
         # same bindings, but for the arrow keys
-        bindsym Left resize shrink width 5 px or 5 ppt
-        bindsym Down resize grow height 5 px or 5 ppt
-        bindsym Up resize shrink height 5 px or 5 ppt
-        bindsym Right resize grow width 5 px or 5 ppt
+        bindsym Left resize shrink width 1 px or 1 ppt
+        bindsym Down resize grow height 1 px or 1 ppt
+        bindsym Up resize shrink height 1 px or 1 ppt
+        bindsym Right resize grow width 1 px or 1 ppt
 
         # back to normal: Enter or Escape or $mod+r
         bindsym Return mode "default"
@@ -221,9 +223,15 @@ set $inactive-text-color #676E7D
 set $urgent-bg-color     #E53935
 
 # window colors
+
+hide_edge_borders none
+for_window [class=".*"] border pixel 2
+for_window [class="Alacritty"] border pixel 2
+# for_window [class="Google-chrome"] border pixel 2
+# new_window pixel 1
 #                       border              background         text                 indicator
-client.focused          $bg-color           $bg-color          $text-color          #00ff00
-client.unfocused        $inactive-bg-color $inactive-bg-color $inactive-text-color #00ff00
+client.focused          #000000             #285577 #ffffff #4DBABC #b0c4ff
+client.unfocused        $text-color $inactive-bg-color $inactive-text-color #00ff00
 client.focused_inactive $inactive-bg-color $inactive-bg-color $inactive-text-color #00ff00
 client.urgent           $urgent-bg-color    $urgent-bg-color   $text-color          #00ff00
 
@@ -231,10 +239,10 @@ bar {
         status_command i3blocks -c ~/.config/i3/i3blocks.conf
         position top
         i3bar_command i3bar --transparency
-        font pango:System San Francisco 10
+        font pango:System San Francisco 9
         colors {
             background $bg-color
-                separator #757575
+                separator #757574
             #                  border             background         text
             focused_workspace  $bg-color          $bg-color          $text-color
             inactive_workspace $inactive-bg-color $inactive-bg-color $inactive-text-color
@@ -242,25 +250,35 @@ bar {
           }
 }
 
+# bar {
+#     position top
+#     mode dock
+#     i3bar_command ~/.config/polybar/launch.sh --forest
+# }
+
 bindsym $mod+shift+x exec i3lock --color "$bg-color"
 bindsym $mod+d exec rofi -show run -lines 3 -eh 2 -width 100 -padding 800 -opacity "85" -bw 0 -bc "$bg-color" -bg "$bg-color" -fg "$text-color" -hlbg "$bg-color" -hlfg "#9575cd" -font "System San Francisco Display 18"
 bindsym $mod+shift+d exec rofi -show emoji -modi emoji
 
 # set bg-image with feh
-exec_always feh --bg-scale /home/kai/Pictures/scifi-city.jpeg
+exec_always feh --bg-scale /home/kai/Pictures/peakpx.jpg
+# exec_always feh --bg-scale /home/kai/Pictures/astronaut-lost-in-space_3840x2160_xtrafondos.com.jpg
+# exec_always feh --bg-scale /home/kai/Pictures/green.jpg
 # capslock => ctrl
 exec_always --no-startup-id /usr/bin/setxkbmap -option "ctrl:nocaps"
 # monitor settings with arandr
 exec_always xrandr --output eDP-1 --primary --mode 1920x1080 --pos 0x0 --rotate normal --output DP-1 --off --output HDMI-1 --off --output DP-2 --off --output HDMI-2 --off
 exec_always xset r rate 200 50
 # exec compton -b
-# exec --no-startup-id picom --experimental-backend -b
 exec --no-startup-id fcitx-autostart
+# exec --no-startup-id xrandr --output DP-1 --mode 2560x1440 --pos 0x0 --rotate left --output eDP-1 --mode 1920x1080 --pos 1440x1800 && feh --bg-center /home/kai/Pictures/1609650.webp /home/kai/Pictures/Desktop-Wallpaper-4.jpg
 # You can also use any non-zero value if you'd like to have a border
-for_window [class=".*"] border pixel 0
 gaps inner 12
-gaps outer 0
+gaps outer 4
 smart_gaps on
-
+#
 exec_always --no-startup-id flameshot
+# exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 bindsym Print exec "flameshot gui"
+exec --no-startup-id picom --experimental-backend -b
+exec --no-startup-id emacs --daemon
